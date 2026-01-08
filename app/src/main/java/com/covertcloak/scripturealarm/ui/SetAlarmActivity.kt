@@ -60,8 +60,8 @@ class SetAlarmActivity : AppCompatActivity() {
         val categories = VerseCategory.entries.map { category ->
             category.name.replace("_", " ").lowercase().replaceFirstChar { it.uppercase() }
         }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val adapter = ArrayAdapter(this, R.layout.spinner_item, categories)
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerCategory.adapter = adapter
 
         btnSave.setOnClickListener {

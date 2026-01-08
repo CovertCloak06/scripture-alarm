@@ -7,10 +7,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
-import android.media.AudioManager
-import android.media.MediaPlayer
-import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
 import android.os.VibrationEffect
@@ -20,6 +16,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import androidx.core.app.NotificationCompat
 import com.covertcloak.scripturealarm.R
+import com.covertcloak.scripturealarm.data.AppPreferences
 import com.covertcloak.scripturealarm.data.BibleVerse
 import com.covertcloak.scripturealarm.data.BibleVerseRepository
 import com.covertcloak.scripturealarm.data.VerseCategory
@@ -29,7 +26,6 @@ import java.util.Locale
 class AlarmService : Service(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
-    private var mediaPlayer: MediaPlayer? = null
     private var vibrator: Vibrator? = null
     private var currentVerse: BibleVerse? = null
     private var isTtsReady = false
@@ -49,6 +45,8 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         createNotificationChannel()
         textToSpeech = TextToSpeech(this, this)
     }
+
+    private var pendingSpeak = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
@@ -78,8 +76,16 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         currentVerseReference = currentVerse?.reference
 
         startForeground(NOTIFICATION_ID, createNotification())
-        startVibration()
-        playAlarmSound()
+
+        // Brief vibration to wake user, then read scripture (NO alarm sound)
+        startBriefVibration()
+
+        // Start speaking the verse automatically
+        if (isTtsReady) {
+            speakVerse()
+        } else {
+            pendingSpeak = true
+        }
 
         // Launch full-screen alarm activity
         val alarmIntent = Intent(this, AlarmActivity::class.java).apply {
@@ -97,15 +103,30 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
             val result = textToSpeech?.setLanguage(Locale.US)
             if (result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED) {
                 isTtsReady = true
-                textToSpeech?.setSpeechRate(0.9f)
-                textToSpeech?.setPitch(1.0f)
+
+                // Apply voice settings from preferences
+                val prefs = AppPreferences(this)
+                textToSpeech?.setSpeechRate(prefs.speechRate)
+                textToSpeech?.setPitch(prefs.speechPitch)
+
+                // Set voice if saved
+                prefs.voiceName?.let { savedVoiceName ->
+                    textToSpeech?.voices?.find { it.name == savedVoiceName }?.let { voice ->
+                        textToSpeech?.voice = voice
+                    }
+                }
+
+                // If alarm triggered before TTS was ready, speak now
+                if (pendingSpeak && currentVerse != null) {
+                    speakVerse()
+                    pendingSpeak = false
+                }
             }
         }
     }
 
     fun speakVerse() {
         if (isTtsReady && currentVerse != null) {
-            stopAlarmSound()
             stopVibration()
 
             val textToSpeak = "Good morning. Here is your scripture for today. ${currentVerse!!.reference}. ${currentVerse!!.text}"
@@ -114,7 +135,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                 override fun onStart(utteranceId: String?) {}
 
                 override fun onDone(utteranceId: String?) {
-                    // Speech completed
+                    // Speech completed - keep alarm active until user dismisses
                 }
 
                 @Deprecated("Deprecated in Java")
@@ -125,7 +146,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun startVibration() {
+    private fun startBriefVibration() {
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
@@ -134,45 +155,18 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        val pattern = longArrayOf(0, 500, 200, 500, 200, 500, 1000)
+        // Brief vibration pattern to get attention, not continuous
+        val pattern = longArrayOf(0, 300, 200, 300, 200, 300)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator?.vibrate(VibrationEffect.createWaveform(pattern, 0))
+            vibrator?.vibrate(VibrationEffect.createWaveform(pattern, -1)) // -1 = don't repeat
         } else {
             @Suppress("DEPRECATION")
-            vibrator?.vibrate(pattern, 0)
+            vibrator?.vibrate(pattern, -1)
         }
     }
 
     private fun stopVibration() {
         vibrator?.cancel()
-    }
-
-    private fun playAlarmSound() {
-        try {
-            val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-                ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-            mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ALARM)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .build()
-                )
-                setDataSource(this@AlarmService, alarmUri)
-                isLooping = true
-                prepare()
-                start()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun stopAlarmSound() {
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
-        mediaPlayer = null
     }
 
     private fun snoozeAlarm() {
@@ -182,7 +176,6 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
     fun stopAlarm() {
         stopVibration()
-        stopAlarmSound()
         textToSpeech?.stop()
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -239,7 +232,6 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
     override fun onDestroy() {
         textToSpeech?.stop()
         textToSpeech?.shutdown()
-        stopAlarmSound()
         stopVibration()
         super.onDestroy()
     }

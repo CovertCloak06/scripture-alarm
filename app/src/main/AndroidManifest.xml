@@ -44,6 +44,11 @@
             android:exported="false"
             android:theme="@style/Theme.ScriptureAlarm" />
 
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ScriptureAlarm" />
+
         <!-- Alarm Service -->
         <service
             android:name=".alarm.AlarmService"
