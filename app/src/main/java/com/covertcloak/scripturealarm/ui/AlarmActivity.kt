@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.WindowManager
@@ -27,11 +28,17 @@ class AlarmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Wake up and show on lock screen
-        window.addFlags(
-            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        } else {
+            @Suppress("DEPRECATION")
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+            )
+        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContentView(R.layout.activity_alarm)
 
@@ -76,7 +83,6 @@ class AlarmActivity : AppCompatActivity() {
         }, Context.BIND_AUTO_CREATE)
 
         val verseText = textVerse.text.toString().trim('"')
-        val verseReference = textReference.text.toString().removePrefix("- ")
 
         scriptureSpeaker = ScriptureSpeaker(
             this,
@@ -122,6 +128,7 @@ class AlarmActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         // Don't allow back button to dismiss alarm easily
         // User must tap the dismiss button

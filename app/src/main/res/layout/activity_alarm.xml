@@ -56,7 +56,7 @@
                 android:fontFamily="serif"
                 android:gravity="center"
                 android:lineSpacingMultiplier="1.4"
-                android:text="\"The Lord is my shepherd; I shall not want.\""
+                android:text="@string/default_verse"
                 android:textColor="@color/verse_text"
                 android:textSize="22sp"
                 android:textStyle="italic" />

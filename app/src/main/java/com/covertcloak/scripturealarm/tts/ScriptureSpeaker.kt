@@ -48,6 +48,7 @@ class ScriptureSpeaker(
                 onComplete()
             }
 
+            @Deprecated("Deprecated in Java")
             override fun onError(utteranceId: String?) {
                 this@ScriptureSpeaker.onError("Speech error")
             }

@@ -117,6 +117,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                     // Speech completed
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onError(utteranceId: String?) {}
             })
 
