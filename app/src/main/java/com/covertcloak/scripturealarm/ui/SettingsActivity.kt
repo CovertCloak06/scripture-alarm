@@ -3,6 +3,7 @@ package com.covertcloak.scripturealarm.ui
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
@@ -23,6 +24,7 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var prefs: AppPreferences
     private var tts: TextToSpeech? = null
     private var availableVoices: List<Voice> = emptyList()
+    private var isTtsReady = false
 
     private lateinit var spinnerVoice: Spinner
     private lateinit var seekBarSpeed: SeekBar
@@ -31,19 +33,33 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var textPitchValue: TextView
     private lateinit var btnTestVoice: Button
     private lateinit var radioGroupTheme: RadioGroup
+    private lateinit var radioGroupFontSize: RadioGroup
     private lateinit var btnSaveSettings: Button
 
     private var selectedColorScheme: Int = AppPreferences.COLOR_SCHEME_PURPLE
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        prefs = AppPreferences(this)
+        // Apply color scheme before setContentView
+        applyColorScheme(prefs.colorScheme)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        prefs = AppPreferences(this)
         tts = TextToSpeech(this, this)
 
         setupViews()
         loadSettings()
+    }
+
+    private fun applyColorScheme(scheme: Int) {
+        val themeId = when (scheme) {
+            AppPreferences.COLOR_SCHEME_BLUE -> R.style.Theme_ScriptureAlarm_Blue
+            AppPreferences.COLOR_SCHEME_GREEN -> R.style.Theme_ScriptureAlarm_Green
+            AppPreferences.COLOR_SCHEME_ORANGE -> R.style.Theme_ScriptureAlarm_Orange
+            else -> R.style.Theme_ScriptureAlarm // Purple default
+        }
+        setTheme(themeId)
     }
 
     private fun setupViews() {
@@ -54,6 +70,7 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         textPitchValue = findViewById(R.id.textPitchValue)
         btnTestVoice = findViewById(R.id.btnTestVoice)
         radioGroupTheme = findViewById(R.id.radioGroupTheme)
+        radioGroupFontSize = findViewById(R.id.radioGroupFontSize)
         btnSaveSettings = findViewById(R.id.btnSaveSettings)
 
         // Speed slider (0.5x to 1.5x)
@@ -124,6 +141,13 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // Load color scheme
         selectedColorScheme = prefs.colorScheme
         highlightSelectedColor()
+
+        // Load font size
+        when (prefs.fontSize) {
+            AppPreferences.FONT_SIZE_SMALL -> findViewById<RadioButton>(R.id.radioFontSmall).isChecked = true
+            AppPreferences.FONT_SIZE_LARGE -> findViewById<RadioButton>(R.id.radioFontLarge).isChecked = true
+            else -> findViewById<RadioButton>(R.id.radioFontMedium).isChecked = true
+        }
     }
 
     private fun highlightSelectedColor() {
@@ -136,65 +160,100 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         buttons.forEach { (id, scheme) ->
             val btn = findViewById<ImageButton>(id)
-            btn.alpha = if (scheme == selectedColorScheme) 1.0f else 0.5f
-            btn.scaleX = if (scheme == selectedColorScheme) 1.2f else 1.0f
-            btn.scaleY = if (scheme == selectedColorScheme) 1.2f else 1.0f
+            btn.alpha = if (scheme == selectedColorScheme) 1.0f else 0.4f
+            btn.scaleX = if (scheme == selectedColorScheme) 1.3f else 1.0f
+            btn.scaleY = if (scheme == selectedColorScheme) 1.3f else 1.0f
         }
     }
 
     override fun onInit(status: Int) {
+        Log.d("SettingsTTS", "onInit called with status: $status")
         if (status == TextToSpeech.SUCCESS) {
-            tts?.language = Locale.US
+            Log.d("SettingsTTS", "TTS init SUCCESS")
+            val result = tts?.setLanguage(Locale.US)
+            Log.d("SettingsTTS", "setLanguage result: $result")
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(this, "English language not supported on this device", Toast.LENGTH_LONG).show()
+                return
+            }
 
-            // Get available voices
+            isTtsReady = true
+            Log.d("SettingsTTS", "isTtsReady set to true")
+
+            // Get available English voices
             availableVoices = tts?.voices?.filter {
-                it.locale.language == "en"
+                it.locale.language == "en" && !it.isNetworkConnectionRequired
             }?.sortedBy { it.name } ?: emptyList()
 
+            // Create friendly voice names
             val voiceNames = if (availableVoices.isNotEmpty()) {
-                availableVoices.map { voice ->
-                    val gender = if (voice.name.contains("female", ignoreCase = true)) "Female"
-                                 else if (voice.name.contains("male", ignoreCase = true)) "Male"
-                                 else ""
-                    "${voice.name.substringAfterLast("-")} $gender".trim()
+                availableVoices.mapIndexed { index, voice ->
+                    val country = when (voice.locale.country) {
+                        "US" -> "American"
+                        "GB" -> "British"
+                        "AU" -> "Australian"
+                        "IN" -> "Indian"
+                        else -> voice.locale.displayCountry
+                    }
+                    val quality = if (voice.quality >= Voice.QUALITY_HIGH) "HD" else ""
+                    "Voice ${index + 1} ($country) $quality".trim()
                 }
             } else {
                 listOf("Default Voice")
             }
 
-            val adapter = ArrayAdapter(this, R.layout.spinner_item, voiceNames)
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            spinnerVoice.adapter = adapter
+            runOnUiThread {
+                val adapter = ArrayAdapter(this, R.layout.spinner_item, voiceNames)
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+                spinnerVoice.adapter = adapter
 
-            // Select saved voice
-            val savedVoiceName = prefs.voiceName
-            if (savedVoiceName != null) {
-                val index = availableVoices.indexOfFirst { it.name == savedVoiceName }
-                if (index >= 0) {
-                    spinnerVoice.setSelection(index)
+                // Select saved voice
+                val savedVoiceName = prefs.voiceName
+                if (savedVoiceName != null) {
+                    val index = availableVoices.indexOfFirst { it.name == savedVoiceName }
+                    if (index >= 0) {
+                        spinnerVoice.setSelection(index)
+                    }
                 }
             }
+        } else {
+            Toast.makeText(this, "Text-to-speech not available on this device", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun testVoice() {
+        Log.d("SettingsTTS", "testVoice() called, isTtsReady=$isTtsReady, tts=$tts")
+        if (!isTtsReady) {
+            Toast.makeText(this, "Voice is still loading, please wait...", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         tts?.let { engine ->
             val speed = 0.5f + (seekBarSpeed.progress / 100f)
             val pitch = 0.5f + (seekBarPitch.progress / 100f)
+            Log.d("SettingsTTS", "Speed: $speed, Pitch: $pitch")
 
             engine.setSpeechRate(speed)
             engine.setPitch(pitch)
 
             if (availableVoices.isNotEmpty() && spinnerVoice.selectedItemPosition < availableVoices.size) {
-                engine.voice = availableVoices[spinnerVoice.selectedItemPosition]
+                val selectedVoice = availableVoices[spinnerVoice.selectedItemPosition]
+                Log.d("SettingsTTS", "Setting voice: ${selectedVoice.name}")
+                engine.voice = selectedVoice
             }
 
-            engine.speak(
-                "The Lord is my shepherd, I shall not want.",
+            Toast.makeText(this, "Playing test...", Toast.LENGTH_SHORT).show()
+
+            val speakResult = engine.speak(
+                "Good morning. The Lord is my shepherd, I shall not want. He makes me lie down in green pastures.",
                 TextToSpeech.QUEUE_FLUSH,
                 null,
-                "test"
+                "test_${System.currentTimeMillis()}"
             )
+            Log.d("SettingsTTS", "speak() returned: $speakResult (0=SUCCESS, -1=ERROR)")
+        } ?: run {
+            Log.d("SettingsTTS", "tts is null!")
+            Toast.makeText(this, "Voice not ready yet", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -225,7 +284,14 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // Save color scheme
         prefs.colorScheme = selectedColorScheme
 
-        Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show()
+        // Save font size
+        prefs.fontSize = when (radioGroupFontSize.checkedRadioButtonId) {
+            R.id.radioFontSmall -> AppPreferences.FONT_SIZE_SMALL
+            R.id.radioFontLarge -> AppPreferences.FONT_SIZE_LARGE
+            else -> AppPreferences.FONT_SIZE_MEDIUM
+        }
+
+        Toast.makeText(this, "Settings saved! Restart app to see changes.", Toast.LENGTH_LONG).show()
         finish()
     }
 

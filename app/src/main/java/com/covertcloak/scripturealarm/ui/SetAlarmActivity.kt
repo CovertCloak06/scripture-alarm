@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.covertcloak.scripturealarm.R
 import com.covertcloak.scripturealarm.alarm.AlarmScheduler
 import com.covertcloak.scripturealarm.data.Alarm
+import com.covertcloak.scripturealarm.data.AppPreferences
 import com.covertcloak.scripturealarm.data.VerseCategory
 import com.google.android.material.switchmaterial.SwitchMaterial
 import java.util.Calendar
@@ -34,11 +35,23 @@ class SetAlarmActivity : AppCompatActivity() {
     private var existingAlarmId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Apply color scheme before setContentView
+        applyColorScheme(AppPreferences(this).colorScheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_alarm)
 
         setupViews()
         loadExistingAlarm()
+    }
+
+    private fun applyColorScheme(scheme: Int) {
+        val themeId = when (scheme) {
+            AppPreferences.COLOR_SCHEME_BLUE -> R.style.Theme_ScriptureAlarm_Blue
+            AppPreferences.COLOR_SCHEME_GREEN -> R.style.Theme_ScriptureAlarm_Green
+            AppPreferences.COLOR_SCHEME_ORANGE -> R.style.Theme_ScriptureAlarm_Orange
+            else -> R.style.Theme_ScriptureAlarm // Purple default
+        }
+        setTheme(themeId)
     }
 
     private fun setupViews() {

@@ -18,6 +18,7 @@ class AppPreferences(context: Context) {
         // Theme settings
         private const val KEY_THEME_MODE = "theme_mode"
         private const val KEY_COLOR_SCHEME = "color_scheme"
+        private const val KEY_FONT_SIZE = "font_size"
 
         // Defaults
         const val DEFAULT_SPEECH_RATE = 0.85f
@@ -30,6 +31,10 @@ class AppPreferences(context: Context) {
         const val COLOR_SCHEME_BLUE = 1
         const val COLOR_SCHEME_GREEN = 2
         const val COLOR_SCHEME_ORANGE = 3
+
+        const val FONT_SIZE_SMALL = 0
+        const val FONT_SIZE_MEDIUM = 1
+        const val FONT_SIZE_LARGE = 2
     }
 
     var speechRate: Float
@@ -51,4 +56,8 @@ class AppPreferences(context: Context) {
     var colorScheme: Int
         get() = prefs.getInt(KEY_COLOR_SCHEME, COLOR_SCHEME_PURPLE)
         set(value) = prefs.edit().putInt(KEY_COLOR_SCHEME, value).apply()
+
+    var fontSize: Int
+        get() = prefs.getInt(KEY_FONT_SIZE, FONT_SIZE_MEDIUM)
+        set(value) = prefs.edit().putInt(KEY_FONT_SIZE, value).apply()
 }

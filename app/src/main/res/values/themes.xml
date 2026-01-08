@@ -1,10 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Purple Theme (Default) -->
     <style name="Theme.ScriptureAlarm" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorPrimary">#5C6BC0</item>
+        <item name="colorPrimaryVariant">#3949AB</item>
         <item name="colorOnPrimary">@android:color/white</item>
-        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="colorSecondary">#7C4DFF</item>
+        <item name="android:statusBarColor">#3949AB</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <!-- Blue Theme -->
+    <style name="Theme.ScriptureAlarm.Blue" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#2196F3</item>
+        <item name="colorPrimaryVariant">#1976D2</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">#03A9F4</item>
+        <item name="android:statusBarColor">#1976D2</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <!-- Green Theme -->
+    <style name="Theme.ScriptureAlarm.Green" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimaryVariant">#388E3C</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">#8BC34A</item>
+        <item name="android:statusBarColor">#388E3C</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <!-- Orange Theme -->
+    <style name="Theme.ScriptureAlarm.Orange" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#FF9800</item>
+        <item name="colorPrimaryVariant">#F57C00</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">#FFB74D</item>
+        <item name="android:statusBarColor">#F57C00</item>
         <item name="android:windowBackground">@color/background</item>
     </style>
 </resources>

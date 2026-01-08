@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.covertcloak.scripturealarm.R
 import com.covertcloak.scripturealarm.alarm.AlarmService
+import com.covertcloak.scripturealarm.data.AppPreferences
 import com.covertcloak.scripturealarm.tts.ScriptureSpeaker
 
 class AlarmActivity : AppCompatActivity() {
@@ -25,6 +26,8 @@ class AlarmActivity : AppCompatActivity() {
     private var scriptureSpeaker: ScriptureSpeaker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Apply color scheme before setContentView
+        applyColorScheme(AppPreferences(this).colorScheme)
         super.onCreate(savedInstanceState)
 
         // Wake up and show on lock screen
@@ -44,6 +47,23 @@ class AlarmActivity : AppCompatActivity() {
 
         setupViews()
         displayVerse()
+        applyFontSize()
+    }
+
+    private fun applyFontSize() {
+        val prefs = AppPreferences(this)
+        val verseSize = when (prefs.fontSize) {
+            AppPreferences.FONT_SIZE_SMALL -> 18f
+            AppPreferences.FONT_SIZE_LARGE -> 26f
+            else -> 22f
+        }
+        val refSize = when (prefs.fontSize) {
+            AppPreferences.FONT_SIZE_SMALL -> 14f
+            AppPreferences.FONT_SIZE_LARGE -> 20f
+            else -> 16f
+        }
+        textVerse.textSize = verseSize
+        textReference.textSize = refSize
     }
 
     private fun setupViews() {
@@ -72,6 +92,16 @@ class AlarmActivity : AppCompatActivity() {
 
         textVerse.text = "\"$verseText\""
         textReference.text = "- $verseReference"
+    }
+
+    private fun applyColorScheme(scheme: Int) {
+        val themeId = when (scheme) {
+            AppPreferences.COLOR_SCHEME_BLUE -> R.style.Theme_ScriptureAlarm_Blue
+            AppPreferences.COLOR_SCHEME_GREEN -> R.style.Theme_ScriptureAlarm_Green
+            AppPreferences.COLOR_SCHEME_ORANGE -> R.style.Theme_ScriptureAlarm_Orange
+            else -> R.style.Theme_ScriptureAlarm // Purple default
+        }
+        setTheme(themeId)
     }
 
     private fun readVerseAloud() {

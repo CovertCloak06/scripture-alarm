@@ -68,7 +68,7 @@
                 android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:text="- Psalm 23:1"
-                android:textColor="@color/verse_reference"
+                android:textColor="?colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -99,7 +99,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/primary"
+        android:backgroundTint="?colorPrimary"
         android:text="Dismiss"
         android:textColor="@android:color/white"
         android:textSize="18sp"

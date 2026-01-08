@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.covertcloak.scripturealarm.R
 import com.covertcloak.scripturealarm.alarm.AlarmScheduler
 import com.covertcloak.scripturealarm.data.Alarm
+import com.covertcloak.scripturealarm.data.AppPreferences
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var emptyView: TextView
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var adapter: AlarmAdapter
+    private lateinit var prefs: AppPreferences
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -41,12 +43,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        prefs = AppPreferences(this)
+        // Apply color scheme before setContentView
+        applyColorScheme(prefs.colorScheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setupViews()
+        applyFontSize()
         checkPermissions()
         loadAlarms()
+    }
+
+    private fun applyFontSize() {
+        val titleSize = when (prefs.fontSize) {
+            AppPreferences.FONT_SIZE_SMALL -> 24f
+            AppPreferences.FONT_SIZE_LARGE -> 32f
+            else -> 28f
+        }
+        val subtitleSize = when (prefs.fontSize) {
+            AppPreferences.FONT_SIZE_SMALL -> 12f
+            AppPreferences.FONT_SIZE_LARGE -> 16f
+            else -> 14f
+        }
+        findViewById<TextView>(R.id.textTitle).textSize = titleSize
+        findViewById<TextView>(R.id.textSubtitle).textSize = subtitleSize
+    }
+
+    private fun applyColorScheme(scheme: Int) {
+        val themeId = when (scheme) {
+            AppPreferences.COLOR_SCHEME_BLUE -> R.style.Theme_ScriptureAlarm_Blue
+            AppPreferences.COLOR_SCHEME_GREEN -> R.style.Theme_ScriptureAlarm_Green
+            AppPreferences.COLOR_SCHEME_ORANGE -> R.style.Theme_ScriptureAlarm_Orange
+            else -> R.style.Theme_ScriptureAlarm // Purple default
+        }
+        setTheme(themeId)
     }
 
     override fun onResume() {
