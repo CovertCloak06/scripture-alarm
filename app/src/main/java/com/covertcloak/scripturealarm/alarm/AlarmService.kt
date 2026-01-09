@@ -7,8 +7,11 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -30,6 +33,23 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
     private var currentVerse: BibleVerse? = null
     private var isTtsReady = false
 
+    // Gradual volume wake-up
+    private var audioManager: AudioManager? = null
+    private var originalVolume: Int = 0
+    private var maxVolume: Int = 15
+    private var currentVolume: Int = 0
+    private val volumeHandler = Handler(Looper.getMainLooper())
+    private val gradualVolumeRunnable = object : Runnable {
+        override fun run() {
+            if (currentVolume < maxVolume) {
+                currentVolume++
+                audioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
+                // Increase volume every 2 seconds over ~30 seconds total
+                volumeHandler.postDelayed(this, 2000)
+            }
+        }
+    }
+
     companion object {
         const val CHANNEL_ID = "scripture_alarm_channel"
         const val NOTIFICATION_ID = 1001
@@ -44,6 +64,11 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         super.onCreate()
         createNotificationChannel()
         textToSpeech = TextToSpeech(this, this)
+
+        // Setup audio manager for gradual volume
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        maxVolume = audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC) ?: 15
+        originalVolume = audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC) ?: maxVolume
     }
 
     private var pendingSpeak = false
@@ -129,6 +154,9 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         if (isTtsReady && currentVerse != null) {
             stopVibration()
 
+            // Start gradual volume wake-up (start at 30% volume)
+            startGradualVolume()
+
             val textToSpeak = "Good morning. Here is your scripture for today. ${currentVerse!!.reference}. ${currentVerse!!.text}"
 
             textToSpeech?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
@@ -144,6 +172,21 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
             textToSpeech?.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, "verse_utterance")
         }
+    }
+
+    private fun startGradualVolume() {
+        // Start at about 30% of max volume
+        currentVolume = (maxVolume * 0.3).toInt().coerceAtLeast(1)
+        audioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
+
+        // Begin gradual increase
+        volumeHandler.postDelayed(gradualVolumeRunnable, 2000)
+    }
+
+    private fun stopGradualVolume() {
+        volumeHandler.removeCallbacks(gradualVolumeRunnable)
+        // Restore original volume
+        audioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0)
     }
 
     private fun startBriefVibration() {
@@ -176,6 +219,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
     fun stopAlarm() {
         stopVibration()
+        stopGradualVolume()
         textToSpeech?.stop()
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -233,6 +277,7 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
         textToSpeech?.stop()
         textToSpeech?.shutdown()
         stopVibration()
+        stopGradualVolume()
         super.onDestroy()
     }
 }
