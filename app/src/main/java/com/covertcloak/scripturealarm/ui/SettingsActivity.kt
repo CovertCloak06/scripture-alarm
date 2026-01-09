@@ -180,10 +180,10 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             isTtsReady = true
             Log.d("SettingsTTS", "isTtsReady set to true")
 
-            // Get available English voices
+            // Get available English voices (including high-quality network voices)
             availableVoices = tts?.voices?.filter {
-                it.locale.language == "en" && !it.isNetworkConnectionRequired
-            }?.sortedBy { it.name } ?: emptyList()
+                it.locale.language == "en"
+            }?.sortedByDescending { it.quality }?.sortedBy { it.isNetworkConnectionRequired } ?: emptyList()
 
             // Create friendly voice names
             val voiceNames = if (availableVoices.isNotEmpty()) {
@@ -196,7 +196,8 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         else -> voice.locale.displayCountry
                     }
                     val quality = if (voice.quality >= Voice.QUALITY_HIGH) "HD" else ""
-                    "Voice ${index + 1} ($country) $quality".trim()
+                    val network = if (voice.isNetworkConnectionRequired) "[Online]" else ""
+                    "Voice ${index + 1} ($country) $quality $network".trim()
                 }
             } else {
                 listOf("Default Voice")
