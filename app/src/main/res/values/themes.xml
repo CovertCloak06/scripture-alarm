@@ -7,7 +7,11 @@
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorSecondary">#7C4DFF</item>
         <item name="android:statusBarColor">#3949AB</item>
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowBackground">?appBackgroundColor</item>
+        <!-- Custom colors -->
+        <item name="appBackgroundColor">#F5F5F7</item>
+        <item name="alarmBackgroundColor">#1A237E</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
     </style>
 
     <!-- Blue Theme -->
@@ -17,7 +21,11 @@
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorSecondary">#03A9F4</item>
         <item name="android:statusBarColor">#1976D2</item>
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowBackground">?appBackgroundColor</item>
+        <!-- Custom colors -->
+        <item name="appBackgroundColor">#E3F2FD</item>
+        <item name="alarmBackgroundColor">#0D47A1</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
     </style>
 
     <!-- Green Theme -->
@@ -27,7 +35,11 @@
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorSecondary">#8BC34A</item>
         <item name="android:statusBarColor">#388E3C</item>
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowBackground">?appBackgroundColor</item>
+        <!-- Custom colors -->
+        <item name="appBackgroundColor">#E8F5E9</item>
+        <item name="alarmBackgroundColor">#1B5E20</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
     </style>
 
     <!-- Orange Theme -->
@@ -37,6 +49,10 @@
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorSecondary">#FFB74D</item>
         <item name="android:statusBarColor">#F57C00</item>
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowBackground">?appBackgroundColor</item>
+        <!-- Custom colors -->
+        <item name="appBackgroundColor">#FFF3E0</item>
+        <item name="alarmBackgroundColor">#E65100</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
     </style>
 </resources>
