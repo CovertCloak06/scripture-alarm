@@ -57,7 +57,7 @@
                 android:gravity="center"
                 android:lineSpacingMultiplier="1.4"
                 android:text="@string/default_verse"
-                android:textColor="@color/verse_text"
+                android:textColor="?textPrimaryColor"
                 android:textSize="22sp"
                 android:textStyle="italic" />
 

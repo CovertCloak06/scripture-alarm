@@ -12,6 +12,8 @@
         <item name="appBackgroundColor">#F5F5F7</item>
         <item name="alarmBackgroundColor">#1A237E</item>
         <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="textPrimaryColor">#212121</item>
+        <item name="textSecondaryColor">#757575</item>
     </style>
 
     <!-- Blue Theme -->
@@ -26,6 +28,8 @@
         <item name="appBackgroundColor">#E3F2FD</item>
         <item name="alarmBackgroundColor">#0D47A1</item>
         <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="textPrimaryColor">#0D47A1</item>
+        <item name="textSecondaryColor">#1565C0</item>
     </style>
 
     <!-- Green Theme -->
@@ -40,6 +44,8 @@
         <item name="appBackgroundColor">#E8F5E9</item>
         <item name="alarmBackgroundColor">#1B5E20</item>
         <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="textPrimaryColor">#1B5E20</item>
+        <item name="textSecondaryColor">#2E7D32</item>
     </style>
 
     <!-- Orange Theme -->
@@ -54,5 +60,7 @@
         <item name="appBackgroundColor">#FFF3E0</item>
         <item name="alarmBackgroundColor">#E65100</item>
         <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="textPrimaryColor">#E65100</item>
+        <item name="textSecondaryColor">#F57C00</item>
     </style>
 </resources>

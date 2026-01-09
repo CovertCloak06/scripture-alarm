@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your Name (for greeting)"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:textSize="16sp" />
 
         <EditText
@@ -47,7 +47,7 @@
             android:layout_marginBottom="24dp"
             android:hint="e.g. Sarah"
             android:inputType="textPersonName"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:background="@drawable/spinner_background"
             android:padding="12dp" />
 
@@ -55,7 +55,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/text_secondary"
+            android:background="?textSecondaryColor"
             android:alpha="0.3"
             android:layout_marginBottom="24dp" />
 
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Voice"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:textSize="16sp" />
 
         <Spinner
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Speech Speed"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Slow"
-                android:textColor="@color/text_secondary"
+                android:textColor="?textSecondaryColor"
                 android:textSize="12sp" />
 
             <SeekBar
@@ -117,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fast"
-                android:textColor="@color/text_secondary"
+                android:textColor="?textSecondaryColor"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -135,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Voice Pitch"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -149,7 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Low"
-                android:textColor="@color/text_secondary"
+                android:textColor="?textSecondaryColor"
                 android:textSize="12sp" />
 
             <SeekBar
@@ -164,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="High"
-                android:textColor="@color/text_secondary"
+                android:textColor="?textSecondaryColor"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -192,7 +192,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/text_secondary"
+            android:background="?textSecondaryColor"
             android:alpha="0.3"
             android:layout_marginBottom="24dp" />
 
@@ -209,7 +209,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Theme"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:textSize="16sp" />
 
         <RadioGroup
@@ -224,28 +224,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="System default"
-                android:textColor="@color/text_primary" />
+                android:textColor="?textPrimaryColor" />
 
             <RadioButton
                 android:id="@+id/radioThemeLight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Light"
-                android:textColor="@color/text_primary" />
+                android:textColor="?textPrimaryColor" />
 
             <RadioButton
                 android:id="@+id/radioThemeDark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dark"
-                android:textColor="@color/text_primary" />
+                android:textColor="?textPrimaryColor" />
         </RadioGroup>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Color Scheme"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:textSize="16sp"
             android:layout_marginBottom="12dp" />
 
@@ -293,7 +293,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Font Size"
-            android:textColor="@color/text_primary"
+            android:textColor="?textPrimaryColor"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
 
@@ -311,7 +311,7 @@
                 android:layout_height="wrap_content"
                 android:text="Small"
                 android:textSize="12sp"
-                android:textColor="@color/text_primary"
+                android:textColor="?textPrimaryColor"
                 android:layout_marginEnd="16dp" />
 
             <RadioButton
@@ -320,7 +320,7 @@
                 android:layout_height="wrap_content"
                 android:text="Medium"
                 android:textSize="16sp"
-                android:textColor="@color/text_primary"
+                android:textColor="?textPrimaryColor"
                 android:layout_marginEnd="16dp" />
 
             <RadioButton
@@ -329,7 +329,7 @@
                 android:layout_height="wrap_content"
                 android:text="Large"
                 android:textSize="20sp"
-                android:textColor="@color/text_primary" />
+                android:textColor="?textPrimaryColor" />
         </RadioGroup>
 
         <Button
