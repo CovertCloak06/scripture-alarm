@@ -6,6 +6,7 @@ import android.speech.tts.Voice
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -26,6 +27,7 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var availableVoices: List<Voice> = emptyList()
     private var isTtsReady = false
 
+    private lateinit var editName: EditText
     private lateinit var spinnerVoice: Spinner
     private lateinit var seekBarSpeed: SeekBar
     private lateinit var seekBarPitch: SeekBar
@@ -63,6 +65,7 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun setupViews() {
+        editName = findViewById(R.id.editName)
         spinnerVoice = findViewById(R.id.spinnerVoice)
         seekBarSpeed = findViewById(R.id.seekBarSpeed)
         seekBarPitch = findViewById(R.id.seekBarPitch)
@@ -121,6 +124,9 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun loadSettings() {
+        // Load name
+        editName.setText(prefs.userName ?: "")
+
         // Load speed (convert 0.5-1.5 to 0-100)
         val speedProgress = ((prefs.speechRate - 0.5f) * 100).toInt()
         seekBarSpeed.progress = speedProgress.coerceIn(0, 100)
@@ -259,6 +265,10 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun saveSettings() {
+        // Save name
+        val name = editName.text.toString().trim()
+        prefs.userName = if (name.isNotEmpty()) name else null
+
         // Save voice settings
         prefs.speechRate = 0.5f + (seekBarSpeed.progress / 100f)
         prefs.speechPitch = 0.5f + (seekBarPitch.progress / 100f)

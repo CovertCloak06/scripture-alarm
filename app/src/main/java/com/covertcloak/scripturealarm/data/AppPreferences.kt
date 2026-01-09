@@ -14,6 +14,7 @@ class AppPreferences(context: Context) {
         private const val KEY_SPEECH_RATE = "speech_rate"
         private const val KEY_SPEECH_PITCH = "speech_pitch"
         private const val KEY_VOICE_NAME = "voice_name"
+        private const val KEY_USER_NAME = "user_name"
 
         // Theme settings
         private const val KEY_THEME_MODE = "theme_mode"
@@ -48,6 +49,10 @@ class AppPreferences(context: Context) {
     var voiceName: String?
         get() = prefs.getString(KEY_VOICE_NAME, null)
         set(value) = prefs.edit().putString(KEY_VOICE_NAME, value).apply()
+
+    var userName: String?
+        get() = prefs.getString(KEY_USER_NAME, null)
+        set(value) = prefs.edit().putString(KEY_USER_NAME, value).apply()
 
     var themeMode: Int
         get() = prefs.getInt(KEY_THEME_MODE, THEME_SYSTEM)

@@ -22,7 +22,43 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp" />
 
+        <!-- Personalization Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Personalization"
+            android:textColor="?colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Name (for greeting)"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:hint="e.g. Sarah"
+            android:inputType="textPersonName"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/spinner_background"
+            android:padding="12dp" />
+
         <!-- Voice Settings Section -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/text_secondary"
+            android:alpha="0.3"
+            android:layout_marginBottom="24dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

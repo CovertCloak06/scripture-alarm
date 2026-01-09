@@ -157,7 +157,13 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
             // Start gradual volume wake-up (start at 30% volume)
             startGradualVolume()
 
-            val textToSpeak = "Good morning. Here is your scripture for today. ${currentVerse!!.reference}. ${currentVerse!!.text}"
+            val prefs = AppPreferences(this)
+            val greeting = if (!prefs.userName.isNullOrBlank()) {
+                "Good morning ${prefs.userName}."
+            } else {
+                "Good morning."
+            }
+            val textToSpeak = "$greeting Here is your scripture for today. ${currentVerse!!.reference}. ${currentVerse!!.text}"
 
             textToSpeech?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {}
