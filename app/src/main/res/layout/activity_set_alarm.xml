@@ -136,16 +136,39 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textCategory"
+            android:id="@+id/textScriptureSource"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Verse Category"
+            android:text="Scripture Source"
             android:textColor="?textPrimaryColor"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layoutDays" />
+
+        <Spinner
+            android:id="@+id/spinnerScriptureSource"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/spinner_background"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textScriptureSource" />
+
+        <!-- Category selection (shown when source is CATEGORY) -->
+        <TextView
+            android:id="@+id/textCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Verse Category"
+            android:textColor="?textPrimaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerScriptureSource" />
 
         <Spinner
             android:id="@+id/spinnerCategory"
@@ -158,6 +181,56 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textCategory" />
 
+        <!-- Book selection (shown when source is SPECIFIC_BOOK or SPECIFIC_CHAPTER) -->
+        <TextView
+            android:id="@+id/textBook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Book"
+            android:textColor="?textPrimaryColor"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerCategory" />
+
+        <Spinner
+            android:id="@+id/spinnerBook"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/spinner_background"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textBook" />
+
+        <!-- Chapter selection (shown when source is SPECIFIC_CHAPTER) -->
+        <TextView
+            android:id="@+id/textChapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Chapter"
+            android:textColor="?textPrimaryColor"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerBook" />
+
+        <Spinner
+            android:id="@+id/spinnerChapter"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/spinner_background"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textChapter" />
+
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchSequential"
             android:layout_width="0dp"
@@ -167,7 +240,7 @@
             android:textColor="?textPrimaryColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerCategory" />
+            app:layout_constraintTop_toBottomOf="@id/spinnerChapter" />
 
         <LinearLayout
             android:layout_width="0dp"

@@ -20,6 +20,9 @@ object AlarmScheduler {
             putExtra(AlarmReceiver.EXTRA_ALARM_ID, alarm.id)
             putExtra(AlarmReceiver.EXTRA_VERSE_CATEGORY, alarm.verseCategory.name)
             putExtra(AlarmReceiver.EXTRA_USE_SEQUENTIAL, alarm.useSequentialVerses)
+            putExtra(AlarmReceiver.EXTRA_SCRIPTURE_SOURCE, alarm.scriptureSource.name)
+            putExtra(AlarmReceiver.EXTRA_SELECTED_BOOK, alarm.selectedBook)
+            putExtra(AlarmReceiver.EXTRA_SELECTED_CHAPTER, alarm.selectedChapter)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -110,7 +113,8 @@ object AlarmScheduler {
     private fun serializeAlarms(alarms: List<Alarm>): String {
         return alarms.joinToString("|") { alarm ->
             "${alarm.id},${alarm.hour},${alarm.minute},${alarm.enabled}," +
-                    "${alarm.label},${alarm.daysOfWeek.joinToString(";")},${alarm.verseCategory.name},${alarm.useSequentialVerses}"
+                    "${alarm.label},${alarm.daysOfWeek.joinToString(";")},${alarm.verseCategory.name},${alarm.useSequentialVerses}," +
+                    "${alarm.scriptureSource.name},${alarm.selectedBook},${alarm.selectedChapter}"
         }
     }
 
@@ -129,7 +133,11 @@ object AlarmScheduler {
                         label = parts[4],
                         daysOfWeek = if (parts[5].isBlank()) emptySet() else parts[5].split(";").map { it.toInt() }.toSet(),
                         verseCategory = try { com.covertcloak.scripturealarm.data.VerseCategory.valueOf(parts[6]) } catch (e: Exception) { com.covertcloak.scripturealarm.data.VerseCategory.GENERAL },
-                        useSequentialVerses = parts[7].toBoolean()
+                        useSequentialVerses = parts[7].toBoolean(),
+                        // New fields with defaults for backward compatibility
+                        scriptureSource = if (parts.size > 8) try { com.covertcloak.scripturealarm.data.ScriptureSource.valueOf(parts[8]) } catch (e: Exception) { com.covertcloak.scripturealarm.data.ScriptureSource.CATEGORY } else com.covertcloak.scripturealarm.data.ScriptureSource.CATEGORY,
+                        selectedBook = if (parts.size > 9) parts[9] else "",
+                        selectedChapter = if (parts.size > 10) parts[10].toIntOrNull() ?: 0 else 0
                     )
                 } else null
             } catch (e: Exception) {

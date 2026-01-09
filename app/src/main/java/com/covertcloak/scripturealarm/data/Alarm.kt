@@ -2,6 +2,15 @@ package com.covertcloak.scripturealarm.data
 
 import java.util.Calendar
 
+enum class ScriptureSource {
+    CATEGORY,       // Use curated verse categories (original behavior)
+    FULL_BIBLE,     // Random from entire Bible
+    OLD_TESTAMENT,  // Random from Old Testament
+    NEW_TESTAMENT,  // Random from New Testament
+    SPECIFIC_BOOK,  // Random from a specific book
+    SPECIFIC_CHAPTER // Random from a specific chapter
+}
+
 data class Alarm(
     val id: Int = 0,
     val hour: Int,
@@ -10,7 +19,11 @@ data class Alarm(
     val label: String = "",
     val daysOfWeek: Set<Int> = emptySet(), // Calendar.SUNDAY, MONDAY, etc.
     val verseCategory: VerseCategory = VerseCategory.GENERAL,
-    val useSequentialVerses: Boolean = false // false = random, true = sequential
+    val useSequentialVerses: Boolean = false, // false = random, true = sequential
+    // New scripture source options
+    val scriptureSource: ScriptureSource = ScriptureSource.CATEGORY,
+    val selectedBook: String = "",  // For SPECIFIC_BOOK or SPECIFIC_CHAPTER
+    val selectedChapter: Int = 0    // For SPECIFIC_CHAPTER (0 = all chapters)
 ) {
     fun getTimeString(): String {
         val period = if (hour >= 12) "PM" else "AM"

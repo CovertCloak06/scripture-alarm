@@ -20,8 +20,10 @@ import android.speech.tts.UtteranceProgressListener
 import androidx.core.app.NotificationCompat
 import com.covertcloak.scripturealarm.R
 import com.covertcloak.scripturealarm.data.AppPreferences
+import com.covertcloak.scripturealarm.data.BibleDatabase
 import com.covertcloak.scripturealarm.data.BibleVerse
 import com.covertcloak.scripturealarm.data.BibleVerseRepository
+import com.covertcloak.scripturealarm.data.ScriptureSource
 import com.covertcloak.scripturealarm.data.VerseCategory
 import com.covertcloak.scripturealarm.ui.AlarmActivity
 import java.util.Locale
@@ -91,11 +93,15 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
 
         val useSequential = intent?.getBooleanExtra(AlarmReceiver.EXTRA_USE_SEQUENTIAL, false) ?: false
 
-        currentVerse = if (useSequential) {
-            BibleVerseRepository.getNextVerse()
-        } else {
-            BibleVerseRepository.getRandomVerse(verseCategory)
-        }
+        // Get scripture source settings
+        val scriptureSource = intent?.getStringExtra(AlarmReceiver.EXTRA_SCRIPTURE_SOURCE)?.let {
+            try { ScriptureSource.valueOf(it) } catch (e: Exception) { ScriptureSource.CATEGORY }
+        } ?: ScriptureSource.CATEGORY
+        val selectedBook = intent?.getStringExtra(AlarmReceiver.EXTRA_SELECTED_BOOK) ?: ""
+        val selectedChapter = intent?.getIntExtra(AlarmReceiver.EXTRA_SELECTED_CHAPTER, 0) ?: 0
+
+        // Get verse based on scripture source
+        currentVerse = getVerseForSource(scriptureSource, verseCategory, useSequential, selectedBook, selectedChapter)
 
         currentVerseText = currentVerse?.text
         currentVerseReference = currentVerse?.reference
@@ -145,6 +151,69 @@ class AlarmService : Service(), TextToSpeech.OnInitListener {
                 if (pendingSpeak && currentVerse != null) {
                     speakVerse()
                     pendingSpeak = false
+                }
+            }
+        }
+    }
+
+    private fun getVerseForSource(
+        source: ScriptureSource,
+        category: VerseCategory,
+        useSequential: Boolean,
+        selectedBook: String,
+        selectedChapter: Int
+    ): BibleVerse {
+        return when (source) {
+            ScriptureSource.CATEGORY -> {
+                // Use original curated verse system
+                if (useSequential) {
+                    BibleVerseRepository.getNextVerse()
+                } else {
+                    BibleVerseRepository.getRandomVerse(category)
+                }
+            }
+            ScriptureSource.FULL_BIBLE -> {
+                // Random verse from entire Bible
+                val bibleDb = BibleDatabase.getInstance(this)
+                val verse = bibleDb.getRandomVerse()
+                verse?.let {
+                    BibleVerse(it.bookName, it.chapter, it.verse, it.text)
+                } ?: BibleVerseRepository.getRandomVerse(category)
+            }
+            ScriptureSource.OLD_TESTAMENT -> {
+                val bibleDb = BibleDatabase.getInstance(this)
+                val verse = bibleDb.getRandomVerseFromTestament("Old Testament")
+                verse?.let {
+                    BibleVerse(it.bookName, it.chapter, it.verse, it.text)
+                } ?: BibleVerseRepository.getRandomVerse(category)
+            }
+            ScriptureSource.NEW_TESTAMENT -> {
+                val bibleDb = BibleDatabase.getInstance(this)
+                val verse = bibleDb.getRandomVerseFromTestament("New Testament")
+                verse?.let {
+                    BibleVerse(it.bookName, it.chapter, it.verse, it.text)
+                } ?: BibleVerseRepository.getRandomVerse(category)
+            }
+            ScriptureSource.SPECIFIC_BOOK -> {
+                if (selectedBook.isNotEmpty()) {
+                    val bibleDb = BibleDatabase.getInstance(this)
+                    val verse = bibleDb.getRandomVerseFromBook(selectedBook)
+                    verse?.let {
+                        BibleVerse(it.bookName, it.chapter, it.verse, it.text)
+                    } ?: BibleVerseRepository.getRandomVerse(category)
+                } else {
+                    BibleVerseRepository.getRandomVerse(category)
+                }
+            }
+            ScriptureSource.SPECIFIC_CHAPTER -> {
+                if (selectedBook.isNotEmpty() && selectedChapter > 0) {
+                    val bibleDb = BibleDatabase.getInstance(this)
+                    val verse = bibleDb.getRandomVerseFromChapter(selectedBook, selectedChapter)
+                    verse?.let {
+                        BibleVerse(it.bookName, it.chapter, it.verse, it.text)
+                    } ?: BibleVerseRepository.getRandomVerse(category)
+                } else {
+                    BibleVerseRepository.getRandomVerse(category)
                 }
             }
         }
