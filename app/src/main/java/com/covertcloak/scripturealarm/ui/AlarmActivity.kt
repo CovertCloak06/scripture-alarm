@@ -96,9 +96,15 @@ class AlarmActivity : AppCompatActivity() {
 
     private fun applyColorScheme(scheme: Int) {
         val themeId = when (scheme) {
+            AppPreferences.COLOR_SCHEME_DARK_PURPLE -> R.style.Theme_ScriptureAlarm_DarkPurple
             AppPreferences.COLOR_SCHEME_BLUE -> R.style.Theme_ScriptureAlarm_Blue
+            AppPreferences.COLOR_SCHEME_DARK_BLUE -> R.style.Theme_ScriptureAlarm_DarkBlue
             AppPreferences.COLOR_SCHEME_GREEN -> R.style.Theme_ScriptureAlarm_Green
+            AppPreferences.COLOR_SCHEME_DARK_GREEN -> R.style.Theme_ScriptureAlarm_DarkGreen
             AppPreferences.COLOR_SCHEME_ORANGE -> R.style.Theme_ScriptureAlarm_Orange
+            AppPreferences.COLOR_SCHEME_DARK_ORANGE -> R.style.Theme_ScriptureAlarm_DarkOrange
+            AppPreferences.COLOR_SCHEME_PINK -> R.style.Theme_ScriptureAlarm_Pink
+            AppPreferences.COLOR_SCHEME_TEAL -> R.style.Theme_ScriptureAlarm_Teal
             else -> R.style.Theme_ScriptureAlarm // Purple default
         }
         setTheme(themeId)

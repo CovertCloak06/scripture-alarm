@@ -56,9 +56,15 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun applyColorScheme(scheme: Int) {
         val themeId = when (scheme) {
+            AppPreferences.COLOR_SCHEME_DARK_PURPLE -> R.style.Theme_ScriptureAlarm_DarkPurple
             AppPreferences.COLOR_SCHEME_BLUE -> R.style.Theme_ScriptureAlarm_Blue
+            AppPreferences.COLOR_SCHEME_DARK_BLUE -> R.style.Theme_ScriptureAlarm_DarkBlue
             AppPreferences.COLOR_SCHEME_GREEN -> R.style.Theme_ScriptureAlarm_Green
+            AppPreferences.COLOR_SCHEME_DARK_GREEN -> R.style.Theme_ScriptureAlarm_DarkGreen
             AppPreferences.COLOR_SCHEME_ORANGE -> R.style.Theme_ScriptureAlarm_Orange
+            AppPreferences.COLOR_SCHEME_DARK_ORANGE -> R.style.Theme_ScriptureAlarm_DarkOrange
+            AppPreferences.COLOR_SCHEME_PINK -> R.style.Theme_ScriptureAlarm_Pink
+            AppPreferences.COLOR_SCHEME_TEAL -> R.style.Theme_ScriptureAlarm_Teal
             else -> R.style.Theme_ScriptureAlarm // Purple default
         }
         setTheme(themeId)
@@ -100,7 +106,7 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             testVoice()
         }
 
-        // Color scheme buttons
+        // Color scheme buttons - Light themes
         findViewById<ImageButton>(R.id.btnColorPurple).setOnClickListener {
             selectedColorScheme = AppPreferences.COLOR_SCHEME_PURPLE
             highlightSelectedColor()
@@ -115,6 +121,32 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         findViewById<ImageButton>(R.id.btnColorOrange).setOnClickListener {
             selectedColorScheme = AppPreferences.COLOR_SCHEME_ORANGE
+            highlightSelectedColor()
+        }
+        findViewById<ImageButton>(R.id.btnColorPink).setOnClickListener {
+            selectedColorScheme = AppPreferences.COLOR_SCHEME_PINK
+            highlightSelectedColor()
+        }
+
+        // Color scheme buttons - Dark themes
+        findViewById<ImageButton>(R.id.btnColorDarkPurple).setOnClickListener {
+            selectedColorScheme = AppPreferences.COLOR_SCHEME_DARK_PURPLE
+            highlightSelectedColor()
+        }
+        findViewById<ImageButton>(R.id.btnColorDarkBlue).setOnClickListener {
+            selectedColorScheme = AppPreferences.COLOR_SCHEME_DARK_BLUE
+            highlightSelectedColor()
+        }
+        findViewById<ImageButton>(R.id.btnColorDarkGreen).setOnClickListener {
+            selectedColorScheme = AppPreferences.COLOR_SCHEME_DARK_GREEN
+            highlightSelectedColor()
+        }
+        findViewById<ImageButton>(R.id.btnColorDarkOrange).setOnClickListener {
+            selectedColorScheme = AppPreferences.COLOR_SCHEME_DARK_ORANGE
+            highlightSelectedColor()
+        }
+        findViewById<ImageButton>(R.id.btnColorTeal).setOnClickListener {
+            selectedColorScheme = AppPreferences.COLOR_SCHEME_TEAL
             highlightSelectedColor()
         }
 
@@ -158,17 +190,25 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun highlightSelectedColor() {
         val buttons = listOf(
+            // Light themes
             R.id.btnColorPurple to AppPreferences.COLOR_SCHEME_PURPLE,
             R.id.btnColorBlue to AppPreferences.COLOR_SCHEME_BLUE,
             R.id.btnColorGreen to AppPreferences.COLOR_SCHEME_GREEN,
-            R.id.btnColorOrange to AppPreferences.COLOR_SCHEME_ORANGE
+            R.id.btnColorOrange to AppPreferences.COLOR_SCHEME_ORANGE,
+            R.id.btnColorPink to AppPreferences.COLOR_SCHEME_PINK,
+            // Dark themes
+            R.id.btnColorDarkPurple to AppPreferences.COLOR_SCHEME_DARK_PURPLE,
+            R.id.btnColorDarkBlue to AppPreferences.COLOR_SCHEME_DARK_BLUE,
+            R.id.btnColorDarkGreen to AppPreferences.COLOR_SCHEME_DARK_GREEN,
+            R.id.btnColorDarkOrange to AppPreferences.COLOR_SCHEME_DARK_ORANGE,
+            R.id.btnColorTeal to AppPreferences.COLOR_SCHEME_TEAL
         )
 
         buttons.forEach { (id, scheme) ->
             val btn = findViewById<ImageButton>(id)
             btn.alpha = if (scheme == selectedColorScheme) 1.0f else 0.4f
-            btn.scaleX = if (scheme == selectedColorScheme) 1.3f else 1.0f
-            btn.scaleY = if (scheme == selectedColorScheme) 1.3f else 1.0f
+            btn.scaleX = if (scheme == selectedColorScheme) 1.2f else 1.0f
+            btn.scaleY = if (scheme == selectedColorScheme) 1.2f else 1.0f
         }
     }
 

@@ -29,9 +29,15 @@ class AppPreferences(context: Context) {
         const val THEME_DARK = 2
 
         const val COLOR_SCHEME_PURPLE = 0
-        const val COLOR_SCHEME_BLUE = 1
-        const val COLOR_SCHEME_GREEN = 2
-        const val COLOR_SCHEME_ORANGE = 3
+        const val COLOR_SCHEME_DARK_PURPLE = 1
+        const val COLOR_SCHEME_BLUE = 2
+        const val COLOR_SCHEME_DARK_BLUE = 3
+        const val COLOR_SCHEME_GREEN = 4
+        const val COLOR_SCHEME_DARK_GREEN = 5
+        const val COLOR_SCHEME_ORANGE = 6
+        const val COLOR_SCHEME_DARK_ORANGE = 7
+        const val COLOR_SCHEME_PINK = 8
+        const val COLOR_SCHEME_TEAL = 9
 
         const val FONT_SIZE_SMALL = 0
         const val FONT_SIZE_MEDIUM = 1

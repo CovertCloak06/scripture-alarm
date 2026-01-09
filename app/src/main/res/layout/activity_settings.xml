@@ -247,7 +247,71 @@
             android:text="Color Scheme"
             android:textColor="?textPrimaryColor"
             android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Light Themes"
+            android:textColor="?textSecondaryColor"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/btnColorPurple"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/color_circle_purple"
+                android:contentDescription="Purple theme" />
+
+            <ImageButton
+                android:id="@+id/btnColorBlue"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/color_circle_blue"
+                android:contentDescription="Blue theme" />
+
+            <ImageButton
+                android:id="@+id/btnColorGreen"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/color_circle_green"
+                android:contentDescription="Green theme" />
+
+            <ImageButton
+                android:id="@+id/btnColorOrange"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/color_circle_orange"
+                android:contentDescription="Orange theme" />
+
+            <ImageButton
+                android:id="@+id/btnColorPink"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/color_circle_pink"
+                android:contentDescription="Pink theme" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dark Themes"
+            android:textColor="?textSecondaryColor"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -257,36 +321,44 @@
             android:layout_marginBottom="24dp">
 
             <ImageButton
-                android:id="@+id/btnColorPurple"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
+                android:id="@+id/btnColorDarkPurple"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/color_circle_purple"
-                android:contentDescription="Purple theme" />
+                android:contentDescription="Dark Purple theme" />
 
             <ImageButton
-                android:id="@+id/btnColorBlue"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
+                android:id="@+id/btnColorDarkBlue"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/color_circle_blue"
-                android:contentDescription="Blue theme" />
+                android:contentDescription="Dark Blue theme" />
 
             <ImageButton
-                android:id="@+id/btnColorGreen"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
+                android:id="@+id/btnColorDarkGreen"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/color_circle_green"
-                android:contentDescription="Green theme" />
+                android:contentDescription="Dark Green theme" />
 
             <ImageButton
-                android:id="@+id/btnColorOrange"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
+                android:id="@+id/btnColorDarkOrange"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/color_circle_orange"
-                android:contentDescription="Orange theme" />
+                android:contentDescription="Dark Orange theme" />
+
+            <ImageButton
+                android:id="@+id/btnColorTeal"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/color_circle_teal"
+                android:contentDescription="Teal theme" />
         </LinearLayout>
 
         <TextView
